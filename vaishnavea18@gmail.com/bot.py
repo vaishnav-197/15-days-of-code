@@ -36,8 +36,15 @@ def main():
     while True:
         update = last_update(url)
         if update_id == update["update_id"]:
-            if get_message_text(update).lower() == "hi" or get_message_text(update).lower() == "hello" :
-                send_message(get_chat_id(update),'Hello welcome , its me Edith ')
+            if get_message_text(update).lower() == "hi" or get_message_text(update).lower() == "hello" or get_message_text(update).lower() == "/start" :
+                send_message(get_chat_id(update),'Hello welcome , its me Edith  \n How  do you want me to help you \n 1.Motivation \n2.Covid details \n 3.Stay tuned for more features.....\n: Do you need Help')
+            elif  get_message_text(update).lower() == "motivation" or get_message_text(update).lower() == "i need motivation" or get_message_text(update).lower() == " edith motivate me" or  get_message_text(update).lower() == "1":
+                mot = requests.get("https://quotes.rest/qod")
+                mot = mot.json()
+                send_message(get_chat_id(update),mot['contents']['quotes'][0]['quote'])
+                send_message(get_chat_id(update),"What do you want me to do for you\n  1.Motivation \n2.Covid details \n 3.Stay tuned for more features.....\n: Do you need Help")
+            elif get_message_text(update).lower() == "Covid details" or  get_message_text(update).lower() == "2" :
+                send_message(get_chat_id(update),"Come tommorow ,\n thank you for your patience")
             else :
                 send_message(get_chat_id(update),'sorry command cannot be recognized :(')
             update_id += 1
