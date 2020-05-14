@@ -1,8 +1,17 @@
 import requests as requests
 from covid import Covid
 import json
+import pyowm
+
+
+# open weathermap api key
+weatherkey = '466637f3807d5d9bb00fccfba2185dee'
+owm = pyowm.OWM(weatherkey)
+
+
 covid = Covid()
 
+# url for telegram bot 
 url = "https://api.telegram.org/bot1200959445:AAH5rwX_74Z5H6Zdac9u0W-T3T5vV77voVU/"
 
 
@@ -40,10 +49,10 @@ def main():
         update = last_update(url)
         if update_id == update["update_id"]:
             if get_message_text(update).lower() == "hi" or get_message_text(update).lower() == "hii" or get_message_text(update).lower() == "hello" or get_message_text(update).lower() == "/start" :
-                send_message(get_chat_id(update),'Hello welcome , its me Edith ,\n How  do you want me to help you \n 1.Motivation \n 2.Covid details \n 3.Stay tuned for more features.....\n Do you need Help then press "help"')
+                send_message(get_chat_id(update),'Hello welcome , its me Edith ,\n How  do you want me to help you \n 1.Motivation \n 2.Covid details \n 3.Weather  \n 4.Stay tuned for more features.....\n Do you need Help then press "help"')
             
             elif  get_message_text(update).lower() == "help":
-                send_message(get_chat_id(update)," \n Edith-Help\n For motivation ✨ try \n 1. Motivation\n 2. I need motivation \n\n For Covid-19 Details ")
+                send_message(get_chat_id(update)," \n Edith-Help\n For motivation ✨ try \n 1. Motivation\n 2. I need motivation \n\n For Covid-19 Details \n try \n global details \n country details(under maintainence) ")
             
             
             elif  get_message_text(update).lower() == "motivation " or get_message_text(update).lower() == "i need motivation"  or  get_message_text(update).lower() == "1":
@@ -56,7 +65,7 @@ def main():
             
             
             elif get_message_text(update).lower() == "Covid details" or  get_message_text(update).lower() == "2" :
-                send_message(get_chat_id(update),"\n Covid-19 Details 🏥 \n  Choose from the following Details \n  Global Details\n  Search By Country ")
+                send_message(get_chat_id(update),"\n Covid-19 Details 🏥 \n  Choose from the following Details \n  Global Details\n  Search By Country (under maintainence) ")
                 
                 
             elif get_message_text(update).lower() == "global details" :
@@ -69,24 +78,28 @@ def main():
                     send_message(get_chat_id(update),"\n Covid-19 Global  Details 🏥 \n  " + st)
             elif get_message_text(update).lower() == "country details" :
                     send_message(get_chat_id(update),"\n  Enter the country name")
+                    junk = get_message_text(update).lower()
                     country = get_message_text(update).lower()
                     print(country)
                     country=covid.get_status_by_country_name(str(country))
-                    send_message(get_chat_id(update)," Country Id: " + country["id"])
-                    send_message(get_chat_id(update)," Country : " + country["country"])
-                    send_message(get_chat_id(update)," confirmed : " + country["confirmed"])
-                    send_message(get_chat_id(update)," active : " + country["active"])
-                    send_message(get_chat_id(update)," deaths : " + country["deaths"])
-                    send_message(get_chat_id(update)," recovered : " + country["recovered"])
+                    send_message(get_chat_id(update)," Country Id: " + country["id"] + "\n")
+                    send_message(get_chat_id(update)," Country : " + country["country"] + "\n")
+                    send_message(get_chat_id(update)," confirmed : " + country["confirmed"] + "\n")
+                    send_message(get_chat_id(update)," active : " + country["active"] + "\n")
+                    send_message(get_chat_id(update)," deaths : " + country["deaths"] + "\n")
+                    send_message(get_chat_id(update)," recovered : " + country["recovered"] + "\n")
+            
+            elif get_message_text(update).lower() == "weather" or  get_message_text(update).lower() == "3" :
+                send_message(get_chat_id(update),"\n  Enter city name")
+                city = get_message_text(update).lower()
+                observation = owm.weather_at_place(city)
 
-
-
-                
+                weather = observation.get_weather()
+                temperature = weather.get_temperature('celsius')['temp']
+                send_message(get_chat_id(update),temperature)
+            
                    
-                    
-            
-            
-            
+                                                       
             else :
                 send_message(get_chat_id(update),'sorry command cannot be recognized ☹️ ☹️')
             update_id += 1
